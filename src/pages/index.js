@@ -89,7 +89,7 @@ export default function Home() {
               <TableCell>{u.name}</TableCell>
               <TableCell>{u.email}</TableCell>
               <TableCell align="right">
-                <Stack direction="row" spacing={2} justifyContent="flex-end">
+                <Stack direction="row" spacing={1} justifyContent="flex-end">
                   <Button size="small" onClick={() => handleOpen(u)}>
                     Edit
                   </Button>
