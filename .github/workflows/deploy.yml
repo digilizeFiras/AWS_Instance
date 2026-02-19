@@ -17,10 +17,36 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-               echo "Connected to EC2"
-               whoami
-               hostname
-               pwd
-               docker ps -a
+            cd AWS_Instance 
+            git pull origin main
 
+            # Detect active container
+            if docker ps | grep -q crmbackend-blue; then
+              NEW=green
+              OLD=blue
+              PORT=3001
+            else
+              NEW=blue
+              OLD=green
+              PORT=3000
+            fi
 
+            echo "Deploying $NEW container on port $PORT"
+
+            docker build -t crm-backend .
+
+            docker run -d \
+              --name crmbackend-$NEW \
+              -p $PORT:3000 \
+              --env-file .env \
+              crm-backend
+
+            sleep 10
+
+            # Switch nginx config
+            sudo ln -sf /etc/nginx/apps/$NEW.conf /etc/nginx/sites-enabled/app.conf
+            sudo systemctl reload nginx
+
+            # Stop old container
+            docker stop crmbackend-$OLD || true
+            docker rm crmbackend-$OLD || true
