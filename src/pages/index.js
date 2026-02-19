@@ -14,6 +14,8 @@ import {
   TableCell,
   TableBody,
   Stack,
+  Paper,
+  TableContainer,
 } from "@mui/material";
 
 export default function Home() {
@@ -63,79 +65,131 @@ export default function Home() {
   };
 
   return (
-    <Container sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        User CRUD (Material UI)
-      </Typography>
+  <Container maxWidth="md" sx={{ mt: 6 }}>
+    <Paper elevation={6} sx={{ p: 4, borderRadius: 4 }}>
+      
+      {/* Header */}
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ mb: 3 }}
+      >
+        <Typography variant="h4" fontWeight="bold">
+          👤 User Management
+        </Typography>
 
-      <Button variant="contained" onClick={() => handleOpen()}>
-        Add User
-      </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ borderRadius: 3, px: 3 }}
+          onClick={() => handleOpen()}
+        >
+          + Add User
+        </Button>
+      </Stack>
 
-      <Table sx={{ mt: 3 }}>
-        <TableHead>
-          <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell align="right">Actions</TableCell>
-          </TableRow>
-        </TableHead>
-
-        <TableBody>
-          {users.map((u) => (
-            <TableRow key={u.id}>
-              <TableCell>{u.id}</TableCell>
-              <TableCell>{u.name}</TableCell>
-              <TableCell>{u.email}</TableCell>
-              <TableCell align="right">
-                <Stack direction="row" spacing={1} justifyContent="flex-end">
-                  <Button size="small" onClick={() => handleOpen(u)}>
-                    Edit
-                  </Button>
-                  <Button
-                    size="small"
-                    color="error"
-                    onClick={() => handleDelete(u.id)}
-                  >
-                    Delete
-                  </Button>
-                </Stack>
-              </TableCell>
+      {/* Table */}
+      <TableContainer component={Paper} elevation={2} sx={{ borderRadius: 3 }}>
+        <Table>
+          <TableHead>
+            <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+              <TableCell><b>ID</b></TableCell>
+              <TableCell><b>Name</b></TableCell>
+              <TableCell><b>Email</b></TableCell>
+              <TableCell align="right"><b>Actions</b></TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
 
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>
-          {form.id ? "Edit User" : "Add User"}
-        </DialogTitle>
+          <TableBody>
+            {users.map((u) => (
+              <TableRow
+                key={u.id}
+                hover
+                sx={{
+                  transition: "0.2s",
+                  "&:hover": { backgroundColor: "#fafafa" }
+                }}
+              >
+                <TableCell>{u.id}</TableCell>
+                <TableCell>{u.name}</TableCell>
+                <TableCell>{u.email}</TableCell>
+                <TableCell align="right">
+                  <Stack direction="row" spacing={1} justifyContent="flex-end">
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => handleOpen(u)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      color="error"
+                      onClick={() => handleDelete(u.id)}
+                    >
+                      Delete
+                    </Button>
+                  </Stack>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Paper>
 
-        <DialogContent>
+    {/* Dialog */}
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      PaperProps={{
+        sx: { borderRadius: 4, p: 1 }
+      }}
+    >
+      <DialogTitle sx={{ fontWeight: "bold" }}>
+        {form.id ? "✏️ Edit User" : "➕ Add User"}
+      </DialogTitle>
+
+      <DialogContent>
+        <Stack spacing={2} sx={{ mt: 1 }}>
           <TextField
-            margin="dense"
             label="Name"
             fullWidth
+            variant="outlined"
             value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            onChange={(e) =>
+              setForm({ ...form, name: e.target.value })
+            }
           />
           <TextField
-            margin="dense"
             label="Email"
             fullWidth
+            variant="outlined"
             value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            onChange={(e) =>
+              setForm({ ...form, email: e.target.value })
+            }
           />
-        </DialogContent>
+        </Stack>
+      </DialogContent>
 
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button variant="contained" onClick={handleSave}>
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Container>
-  );
+      <DialogActions sx={{ pb: 2, pr: 3 }}>
+        <Button onClick={handleClose} sx={{ borderRadius: 3 }}>
+          Cancel
+        </Button>
+        <Button
+          variant="contained"
+          sx={{ borderRadius: 3, px: 3 }}
+          onClick={handleSave}
+        >
+          Save
+        </Button>
+      </DialogActions>
+    </Dialog>
+  </Container>
+);
+
 }
